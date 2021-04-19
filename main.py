@@ -175,8 +175,6 @@ def findMatchingClasses(CSSList, classes):
                 htmlRuleName = classes[i]
                 if CSSruleName == htmlRuleName:
                     matchingList.append(CSSList[n])
-                # print(rulesList[z]['ruleName'])
-                # print('\n')
     return matchingList
 
 parser = MyHTMLParser()
@@ -188,5 +186,5 @@ MatchingClasses = findMatchingClasses(CSSList, classes)
 print("Total number of rules in CSS file = "+ str(len(CSSList)))
 print("Total number of classes and ID in HTML file = "+str(len(classes)))
 print("Total number of matching classes/rules in the CSS file = "+ str(len(MatchingClasses)))
-# print(len(MatchingClasses))
+
 
