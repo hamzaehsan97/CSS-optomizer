@@ -39,5 +39,5 @@ Temporary Items
 .ionide
 
 # Ignore all html and CSS files used for testing
-*.html
-*.CSS
+# *.html
+# *.CSS
