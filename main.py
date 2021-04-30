@@ -90,11 +90,11 @@ def checkForAdjecentSelector(rulesPseudoSeperated):
     for i in range(0,len(rulesPseudoSeperated)):
         ruleName = rulesPseudoSeperated[i]['ruleName']
         ruleNameSplit = ruleName.split("+")
-    if len(ruleNameSplit) > 1:
-        rulesPseudoSeperated[i]['ruleName'] = ruleNameSplit[0]
-        rulesPseudoSeperated[i]['adjecentSelectors'] = ruleNameSplit[1]
-    else:
-        rulesPseudoSeperated[i]['adjecentSelectors'] = False
+        if len(ruleNameSplit) > 1:
+            rulesPseudoSeperated[i]['ruleName'] = ruleNameSplit[0]
+            rulesPseudoSeperated[i]['adjecentSelectors'] = ruleNameSplit[1]
+        else:
+            rulesPseudoSeperated[i]['adjecentSelectors'] = False
     return rulesPseudoSeperated
 
 ## Remove '.' or '# from ruleName
@@ -112,6 +112,17 @@ def removePeriodHashFromRuleName(rulesAdjecentSeperated):
             RuleNameHashSplit = RuleNameHash.split('#')
             rulesAdjecentSeperated[i]['ruleName'] = RuleNameHashSplit[1]
             rulesAdjecentSeperated[i]['selectorType'] = "id"
+        else:
+            ## Seperate Tag name and rule name
+            RuleNameTag  = rulesAdjecentSeperated[i]['ruleName']
+            rulesAdjecentSeperated[i]['selectorType'] = "tag"
+            ruleNamePeriodSplit = RuleNameTag.split(".")
+            if len(ruleNamePeriodSplit) < 2:
+                rulesAdjecentSeperated[i]['tagName'] = False
+                rulesAdjecentSeperated[i]['ruleName'] = ruleNamePeriodSplit[0]
+            else:
+                rulesAdjecentSeperated[i]['tagName'] = ruleNamePeriodSplit[0]
+                rulesAdjecentSeperated[i]['ruleName'] = ruleNamePeriodSplit[1]
     return rulesAdjecentSeperated
 
 ## Check rules for any ',' for extra rules.
@@ -165,6 +176,7 @@ def rulesNamesLabelsTuple(stylesheet):
         # print("\n")
     return CSSList
 
+## Find matching classes
 def findMatchingClasses(CSSList, classes):
     matchingList = []
     for i in range(0,len(classes)):
@@ -177,14 +189,95 @@ def findMatchingClasses(CSSList, classes):
                     matchingList.append(CSSList[n])
     return matchingList
 
+## Return matching rules in CSS format plus "{"
+def getRules(matchingClass):
+    ruleString=""
+    for z in range(0,len(matchingClass['rules'])):
+        if(z > 0):
+            ruleString = ruleString + " , "
+        selectorType = matchingClass['rules'][z]['selectorType']
+        ruleName = matchingClass['rules'][z]['ruleName']
+        pseudoSelectors = matchingClass['rules'][z]['pseudoSelectors']
+        descendants = matchingClass['rules'][z]['descendants']
+        adjecentSelectors = matchingClass['rules'][z]['adjecentSelectors']
+        if selectorType == "class":
+            ruleString = ruleString + "."
+            ruleString = ruleString + ruleName
+        elif selectorType == "id":
+            ruleString = ruleString + "#"
+            ruleString = ruleString + ruleName
+        elif selectorType == "tag":
+            if matchingClass['rules'][z]["tagName"] == False:
+                ruleString = ruleString + ruleName
+            else:
+                ruleString = ruleString + matchingClass['rules'][z]["tagName"] + "."
+                ruleString = ruleString + ruleName
+        else:
+            ruleString = ruleString + "."
+            ruleString = ruleString + ruleName
+
+        
+        
+        if pseudoSelectors == False:
+            pass
+        else:
+            ruleString = ruleString + ":"
+            ruleString = ruleString + pseudoSelectors
+        
+        if adjecentSelectors == False:
+            pass
+        else:
+            ruleString = ruleString + "+"
+            ruleString = ruleString + adjecentSelectors
+        
+        if descendants == False:
+            pass
+        else:
+            for n in range(0,len(descendants)):
+                ruleString = ruleString + " " + descendants[n]
+    
+    return ruleString + " { "
+    
+
+
+
+
+def getFunction(matchingClass):
+    functionString=""
+    for i in range(0,len(matchingClass['functions'])):
+        functionName = matchingClass['functions'][i]['name']
+        functionValue = matchingClass['functions'][i]['value']
+
+        functionString = functionString + functionName
+        functionString = functionString + " : " + functionValue + ";"
+    return functionString + "}"
+
+
+
+
+def returnMatchingCSS(MatchingClasses):
+    CSS = []
+    giantCSS_String = ""
+    for i in range(0,len(MatchingClasses)):
+        rule = getRules(MatchingClasses[i])
+        function = getFunction(MatchingClasses[i])
+        RuleAndFunction = rule + function
+        giantCSS_String = giantCSS_String + RuleAndFunction + " \n"
+        CSS.append(RuleAndFunction)
+    f = open("results.CSS", "a")
+    f.write(giantCSS_String)
+    f.close()
+    return CSS
+    
+
+
 parser = MyHTMLParser()
 parser.feed(htmlFeed)
 classes = removeDuplicates(classes)
 stylesheet = readCSS('styling.CSS')
 CSSList = rulesNamesLabelsTuple(stylesheet)
 MatchingClasses = findMatchingClasses(CSSList, classes)
+MatchingCSS = returnMatchingCSS(MatchingClasses)
 print("Total number of rules in CSS file = "+ str(len(CSSList)))
 print("Total number of classes and ID in HTML file = "+str(len(classes)))
 print("Total number of matching classes/rules in the CSS file = "+ str(len(MatchingClasses)))
-
-
