@@ -17,7 +17,7 @@ These instructions will get you a copy of the project up and running on your loc
 ## Upcoming changes
 
 ```
-1. Creating custom CSS file with the filtered CSS rules
+1. ~~Creating custom CSS file with the filtered CSS rules~~
 2. Read CSS and HTML from links instead of files
 3. Changing script to an object oriented approach
 4. Logging unused script as a seperate CSS file
