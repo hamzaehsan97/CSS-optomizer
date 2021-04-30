@@ -16,14 +16,14 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Upcoming changes
 
-```
-1. ~~Creating custom CSS file with the filtered CSS rules~~
-2. Read CSS and HTML from links instead of files
-3. Changing script to an object oriented approach
-4. Logging unused script as a seperate CSS file
-5. Creating a simple web UI to make the tool accessible
-6. Scan site map for pages and CSS to automate optomization
-```
+
+- [x] Creating custom CSS file with the filtered CSS rules
+- [ ] Read CSS and HTML from links instead of files
+- [ ] Changing script to an object oriented approach
+- [ ] Logging unused script as a seperate CSS file
+- [ ] Creating a simple web UI to make the tool accessible
+- [ ] Scan site map for pages and CSS to automate optomization
+
 
 ## License
 
