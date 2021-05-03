@@ -75,6 +75,7 @@ def checkForPseudoSelector(rulesDescendantSeperated):
         ruleName = rulesDescendantSeperated[i]["ruleName"]
         ruleNameSplit = ruleName.split(":")
         if ruleNameSplit[0] == '':
+            rulesDescendantSeperated[i]['pseudoSelectors'] = False
             pass
         else:
             if len(ruleNameSplit) > 1:
@@ -187,6 +188,13 @@ def findMatchingClasses(CSSList, classes):
                 htmlRuleName = classes[i]
                 if CSSruleName == htmlRuleName:
                     matchingList.append(CSSList[n])
+    
+    for p in range(0,len(CSSList)):
+        rulesList = CSSList[p]['rules']
+        for l in range(0,len(rulesList)):
+            if rulesList[l]['selectorType'] == 'tag':
+                matchingList.append(CSSList[p])
+        
     return matchingList
 
 ## Return matching rules in CSS format plus "{"
