@@ -41,7 +41,16 @@ def seperateAtRules(fileName):
         NewFeed = file.read().replace('\n','')
     seperated = NewFeed.split('@')
     for z in range(1,len(seperated)):
-        listOfQueries.append('@'+returnAtText(seperated[z]))
+        returnedAtText = returnAtText(seperated[z])
+        if returnedAtText == "NestedRule":
+            if z == len(seperated)-1:
+                seperated[z] =  seperated[z] + ' }'
+                listOfQueries.append('@'+returnAtText(seperated[z]))
+            else:
+                addition = seperated[z+1]
+                seperated[z+1] = seperated[z] + " @" + addition
+        else:
+            listOfQueries.append('@'+returnedAtText)
     return listOfQueries
 
 ## Clean and return @ Rule
@@ -49,15 +58,20 @@ def returnAtText(seperatedByAt):
     counter = 0
     returnText = ''
     queryOpened = False
+    RuleOpened = False
     for i in range(0,len(seperatedByAt)):
-        if seperatedByAt[i] == '{':
+        if seperatedByAt[i] == ';':
             queryOpened = True
+        if seperatedByAt[i] == '{':
             counter+=1
+            RuleOpened= True
         elif seperatedByAt[i] == '}':
             counter-=1
         returnText = returnText + seperatedByAt[i]
-        if counter == 0 and queryOpened == True:
+        if counter == 0 and queryOpened == True and RuleOpened == True:
             break
+    if counter != 0 and queryOpened == True and RuleOpened == True:
+        return ("NestedRule")
     return returnText
 
 
