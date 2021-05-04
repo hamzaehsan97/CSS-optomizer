@@ -34,6 +34,31 @@ def readCSS(fileName):
     stylesheet = tinycss.make_parser().parse_stylesheet(CSSFeed)
     return stylesheet
 
+## Split CSS by @ Rules
+def seperateAtRules(fileName):
+    listOfQueries = []
+    with open(fileName, 'r') as file:
+        NewFeed = file.read().replace('\n','')
+    seperated = NewFeed.split('@')
+    for z in range(1,len(seperated)):
+        listOfQueries.append('@'+returnAtText(seperated[z]))
+    return listOfQueries
+
+## Clean and return @ Rule
+def returnAtText(seperatedByAt):
+    counter = 0
+    returnText = ''
+    queryOpened = False
+    for i in range(0,len(seperatedByAt)):
+        if seperatedByAt[i] == '{':
+            queryOpened = True
+            counter+=1
+        elif seperatedByAt[i] == '}':
+            counter-=1
+        returnText = returnText + seperatedByAt[i]
+        if counter == 0 and queryOpened == True:
+            break
+    return returnText
 
 
 
@@ -113,6 +138,8 @@ def removePeriodHashFromRuleName(rulesAdjecentSeperated):
             RuleNameHashSplit = RuleNameHash.split('#')
             rulesAdjecentSeperated[i]['ruleName'] = RuleNameHashSplit[1]
             rulesAdjecentSeperated[i]['selectorType'] = "id"
+        elif(ruleName[0]=='@'):
+            print("Found an @")
         else:
             ## Seperate Tag name and rule name
             RuleNameTag  = rulesAdjecentSeperated[i]['ruleName']
@@ -263,7 +290,7 @@ def getFunction(matchingClass):
 
 
 
-def returnMatchingCSS(MatchingClasses):
+def returnMatchingCSS(MatchingClasses, ListOfAtRules):
     CSS = []
     giantCSS_String = ""
     for i in range(0,len(MatchingClasses)):
@@ -272,7 +299,9 @@ def returnMatchingCSS(MatchingClasses):
         RuleAndFunction = rule + function
         giantCSS_String = giantCSS_String + RuleAndFunction + " \n"
         CSS.append(RuleAndFunction)
-    f = open("results.CSS", "a")
+    for z in range(0,len(ListOfAtRules)):
+        giantCSS_String = giantCSS_String + ListOfAtRules[z] + " \n"
+    f = open("results.CSS", "w")
     f.write(giantCSS_String)
     f.close()
     return CSS
@@ -285,7 +314,10 @@ classes = removeDuplicates(classes)
 stylesheet = readCSS('styling.CSS')
 CSSList = rulesNamesLabelsTuple(stylesheet)
 MatchingClasses = findMatchingClasses(CSSList, classes)
-MatchingCSS = returnMatchingCSS(MatchingClasses)
+ListOfAtRules = seperateAtRules('styling.CSS')
+MatchingCSS = returnMatchingCSS(MatchingClasses, ListOfAtRules)
 print("Total number of rules in CSS file = "+ str(len(CSSList)))
 print("Total number of classes and ID in HTML file = "+str(len(classes)))
 print("Total number of matching classes/rules in the CSS file = "+ str(len(MatchingClasses)))
+print("Total number of @ links bypassed = "+str(len(ListOfAtRules)))
+
