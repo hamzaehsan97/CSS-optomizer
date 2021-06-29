@@ -20,12 +20,12 @@ def optomize():
         url = request.args.get('html_url')
         cwd = os.getcwd()
         html_path = str(url)
-        css_path = cwd+"/optomize/files/styling.css"
+        css_path ="/optomize/files/styling.css"
         opt = Optomize(html_path, css_path)
         results = opt.run()
         del opt
         return(results)
     except Exception as e:
         print(e)
-        return("error: Url missing")
+        return{"error: ": e}
 
