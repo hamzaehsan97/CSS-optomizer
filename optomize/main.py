@@ -313,7 +313,7 @@ class Optomize():
             CSS.append(RuleAndFunction)
         for z in range(0,len(ListOfAtRules)):
             giantCSS_String = giantCSS_String + ListOfAtRules[z] + " \n"
-        f = open("results.CSS", "w")
+        f = open("optomize/files/results.css", "w")
         f.write(giantCSS_String)
         f.close()
         return CSS
