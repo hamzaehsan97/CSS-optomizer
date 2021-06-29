@@ -20,7 +20,7 @@ def optomize():
         url = request.args.get('html_url')
         cwd = os.getcwd()
         html_path = str(url)
-        css_path ="/optomize/files/styling.css"
+        css_path ="optomize/files/styling.css"
         opt = Optomize(html_path, css_path)
         results = opt.run()
         del opt
