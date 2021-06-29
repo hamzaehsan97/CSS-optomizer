@@ -11,6 +11,11 @@ CORS(app)
 
 @app.route("/", methods=['GET', 'POST'])
 def hello_world():
+    return("hello")
+
+
+@app.route("/optomize", methods=['GET', 'POST'])
+def optomize():
     try:
         url = request.args.get('html_url')
         cwd = os.getcwd()
