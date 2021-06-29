@@ -4,18 +4,23 @@ from html.entities import name2codepoint
 import tinycss
 import cssselect
 from html.parser import HTMLParser
+import urllib.request
+import chardet
+import validators
+import os
 
 
 
 
 class Optomize():
-    def __init__(self, html_file, css_file):
-        self.html_file = html_file
+    def __init__(self, html_path, css_file):
+        self.html_path = html_path
         self.css_file = css_file
         self.classes = []
+        self.html_file_name = ""
     
     def read_html(self):
-        with open(self.html_file, 'r') as file:
+        with open(os.getcwd()+"/optomize/files/"+self.html_file_name+".html", 'r') as file:
             htmlFeed = file.read().replace('\n', '')
         return htmlFeed
 
@@ -317,22 +322,66 @@ class Optomize():
         f.write(giantCSS_String)
         f.close()
         return CSS
-       
+
+    def process_url(self, html_url):
+        if(html_url.find('http') == -1 and html_url.find('www') != -1):
+            html_url = 'https://'+html_url
+        elif(html_url.find('http') == -1 and html_url.find('www') == -1):
+            html_url = 'https://www.' + html_url
+        return html_url
+
+
+    def create_html_file(self):
+        html_url = self.process_url(self.html_path)
+        if validators.url(html_url):
+            try:
+                html_file_bytes = urllib.request.urlopen(html_url)
+                html_byte_array = html_file_bytes.read()
+                encoding_type = chardet.detect(html_byte_array)
+                html_str = html_byte_array.decode(encoding_type['encoding'])
+                split_arr = self.html_path.split(".")
+                self.html_file_name = split_arr[1]
+                html_write = open(os.getcwd()+"/optomize/files/"+self.html_file_name+".html", "w")
+                html_write.write(html_str)
+                html_write.close()
+                html_file_bytes.close()
+            except Exception as e:
+                print(e)
+        else:
+            print("Error: Incorrect url format")
+
+    def reset_vars(self):
+        self.html_path = ""
+        self.css_file = ""
+        self.classes = []
+        self.html_file_name = ""
+
     def run(self):
+        changes = []
+        self.create_html_file()
         parser = MyHTMLParser()
         htmlFeed = self.read_html()
         parser.feed(htmlFeed)
-        self.classes = parser.classes
-        classes_b = self.removeDuplicates(self.classes)
+        classes = parser.classes
+        print("LENGTH OF CLASSES = ",len(classes))
+        classes_b = self.removeDuplicates(classes)
         stylesheet = self.readCSS(self.css_file)
         CSSList = self.rulesNamesLabelsTuple(stylesheet)
         MatchingClasses = self.findMatchingClasses(CSSList, classes_b)
         ListOfAtRules = self.seperateAtRules(self.css_file)
         MatchingCSS = self.returnMatchingCSS(MatchingClasses, ListOfAtRules)
-        print("Total number of rules in CSS file = "+ str(len(CSSList)))
-        print("Total number of classes and ID in HTML file = "+str(len(classes_b)))
-        print("Total number of matching classes/rules in the CSS file = "+ str(len(MatchingClasses)))
-        print("Total number of @ links bypassed = "+str(len(ListOfAtRules)))
+
+        changes.append("Total number of rules in CSS file = "+ str(len(CSSList)))
+        changes.append("Total number of classes and ID in HTML file = "+str(len(classes_b)))
+        changes.append("Total number of matching classes/rules in the CSS file = "+ str(len(MatchingClasses)))
+        changes.append("Total number of @ links bypassed = "+str(len(ListOfAtRules)))
+        os.remove(os.getcwd()+"/optomize/files/"+self.html_file_name+".html")
+        self.reset_vars()
+        del parser
+        
+
+
+        return({"results": MatchingCSS, 'changes': changes})
 
 
 
@@ -341,9 +390,9 @@ class Optomize():
 class MyHTMLParser(HTMLParser):
     classes=[]
     def handle_starttag(self, tag, attrs):
-        for attr in attrs:
-            if attr[0] == 'class' or attr[0] == 'id':
-                attrList = attr[1].split()
+        for n in range (0,len(attrs)):
+            if attrs[n][0] == 'class' or attrs[n][0] == 'id':
+                attrList = attrs[n][1].split()
                 for i in attrList:
                     self.classes.append(i)
 
