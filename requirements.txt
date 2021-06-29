@@ -14,3 +14,4 @@ six==1.16.0
 tinycss==0.4
 validators==0.18.2
 Werkzeug==2.0.1
+gunicorn
