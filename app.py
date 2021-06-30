@@ -17,11 +17,11 @@ def hello_world():
 @app.route("/optomize", methods=['GET', 'POST'])
 def optomize():
     try:
-        url = request.args.get('html_url')
-        cwd = os.getcwd()
-        html_path = str(url)
-        css_path ="files/styling.css"
-        opt = Optomize(html_path, css_path)
+        html_url = request.args.get('html_url')
+        css_url = request.args.get('css_url')
+        html_url = str(html_url)
+        css_url = str(css_url)
+        opt = Optomize(html_url, css_url)
         results = opt.run()
         del opt
         return(results)
