@@ -2,6 +2,10 @@
 
 Python tool to remove unused CSS and decrease file size.
 
+# Link
+
+This tool has been converted to a flask app. The client side can be accessed at the following link: https://skinny-css.netlify.app/
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
