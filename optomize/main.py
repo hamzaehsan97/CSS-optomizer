@@ -332,6 +332,7 @@ class Optomize():
         giantCSS_String = ""
         for style_import in imports:
             giantCSS_String = giantCSS_String + style_import['import_statement'] + " \n"
+            CSS.append(style_import['import_statement'])
         for i in range(0,len(MatchingClasses)):
             rule = self.getRules(MatchingClasses[i])
             function = self.getFunction(MatchingClasses[i])
@@ -415,13 +416,13 @@ class Optomize():
         MatchingClasses = self.findMatchingClasses(CSSList, classes_b)
         ListOfAtRules = self.seperateAtRules(self.css_file)
         MatchingCSS = self.returnMatchingCSS(css_and_imports['imports'], MatchingClasses, ListOfAtRules)
-
         changes.append("Total number of rules in CSS file = "+ str(len(CSSList)))
         changes.append("Total number of imports in CSS file = "+ str(len(css_and_imports['imports'])))
         changes.append("Total number of classes and ID in HTML file = "+str(len(classes_b)))
         changes.append("Total number of matching classes/rules in the CSS file = "+ str(len(MatchingClasses)))
         changes.append("Total number of @ links bypassed = "+str(len(ListOfAtRules)))
         os.remove(os.getcwd()+"/optomize/files/"+self.html_file_name+".html")
+        os.remove(self.css_file)
         self.reset_vars()
         del parser
         
@@ -444,8 +445,8 @@ class MyHTMLParser(HTMLParser):
 
 
 
-if __name__ == "__main__":
-    html_link = "https://www.springsapartments.com/"
-    css_link = "https://www.springsapartments.com/hs-fs/hub/365484/hub_generated/template_assets/17821690055/1611588866025/2019/coded_files/springs_2019.min.css"
-    lws = Optomize(html_link, css_link)
-    print(lws.run())
+# if __name__ == "__main__":
+#     html_link = "https://www.springsapartments.com/"
+#     css_link = "https://www.springsapartments.com/hs-fs/hub/365484/hub_generated/template_assets/17821690055/1611588866025/2019/coded_files/springs_2019.min.css"
+#     lws = Optomize(html_link, css_link)
+#     print(lws.run())
