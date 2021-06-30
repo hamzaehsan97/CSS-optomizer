@@ -18,10 +18,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 
 - [x] Creating custom CSS file with the filtered CSS rules
-- [ ] Read CSS and HTML from links instead of files
-- [ ] Changing script to an object oriented approach
+- [x] Read CSS and HTML from links instead of files
+- [x] Changing script to an object oriented approach
 - [ ] Logging unused script as a seperate CSS file
-- [ ] Creating a simple web UI to make the tool accessible
+- [x] Creating a simple web UI to make the tool accessible
 - [ ] Scan site map for pages and CSS to automate optomization
 
 
