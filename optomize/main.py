@@ -232,7 +232,6 @@ class Optomize():
                 CSSDict["functions"]=self.nameAndValue(stylesheet, i)
                 CSSList.append(CSSDict)
             else:
-                print(i)
                 if(stylesheet.rules[i].at_keyword=='@media'):
                     # importRule['import_statement'] = self.process_at_media(stylesheet,i)
                     pass
@@ -347,6 +346,9 @@ class Optomize():
     def returnMatchingCSS(self, imports, MatchingClasses, ListOfAtRules):
         CSS = []
         giantCSS_String = ""
+        for z in range(0,len(ListOfAtRules)):
+            giantCSS_String = giantCSS_String + ListOfAtRules[z] + " \n"
+            CSS.append(ListOfAtRules[z])
         for style_import in imports:
             giantCSS_String = giantCSS_String + style_import['import_statement'] + " \n"
             CSS.append(style_import['import_statement'])
@@ -356,8 +358,7 @@ class Optomize():
             RuleAndFunction = rule + function
             giantCSS_String = giantCSS_String + RuleAndFunction + " \n"
             CSS.append(RuleAndFunction)
-        for z in range(0,len(ListOfAtRules)):
-            giantCSS_String = giantCSS_String + ListOfAtRules[z] + " \n"
+
         f = open("optomize/files/results.css", "w")
         f.write(giantCSS_String)
         f.close()
@@ -432,6 +433,7 @@ class Optomize():
         CSSList = css_and_imports['css']
         MatchingClasses = self.findMatchingClasses(CSSList, classes_b)
         ListOfAtRules = self.seperateAtRules(self.css_file)
+        print(ListOfAtRules)
         MatchingCSS = self.returnMatchingCSS(css_and_imports['imports'], MatchingClasses, ListOfAtRules)
         changes.append("Total number of rules in CSS file = "+ str(len(CSSList)))
         changes.append("Total number of imports in CSS file = "+ str(len(css_and_imports['imports'])))
@@ -462,9 +464,9 @@ class MyHTMLParser(HTMLParser):
 
 
 
-# if __name__ == "__main__":
-    # html_link = "https://blog.koerber-tissue.com"
-    # css_link = "https://blog.koerber-tissue.com/hs-fs/hub/4035267/hub_generated/template_assets/33561049770/1625007799686/koerber-theme/assets/koerber-primary.css"
-    # lws = Optomize(html_link, css_link)
-    # print(lws.run())
-    # lws.run()
+if __name__ == "__main__":
+    html_link = "https://blog.koerber-tissue.com"
+    css_link = "https://blog.koerber-tissue.com/hs-fs/hub/4035267/hub_generated/template_assets/33561049770/1625007799686/koerber-theme/assets/koerber-primary.css"
+    lws = Optomize(html_link, css_link)
+    print(lws.run())
+    lws.run()
