@@ -464,9 +464,8 @@ class MyHTMLParser(HTMLParser):
 
 
 
-if __name__ == "__main__":
-    html_link = "https://blog.koerber-tissue.com"
-    css_link = "https://blog.koerber-tissue.com/hs-fs/hub/4035267/hub_generated/template_assets/33561049770/1625007799686/koerber-theme/assets/koerber-primary.css"
-    lws = Optomize(html_link, css_link)
-    print(lws.run())
-    lws.run()
+# if __name__ == "__main__":
+#     html_link = "https://blog.koerber-tissue.com"
+#     css_link = "https://blog.koerber-tissue.com/hs-fs/hub/4035267/hub_generated/template_assets/33561049770/1625007799686/koerber-theme/assets/koerber-primary.css"
+#     lws = Optomize(html_link, css_link)
+#     lws.run()
