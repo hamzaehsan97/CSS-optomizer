@@ -232,14 +232,31 @@ class Optomize():
                 CSSDict["functions"]=self.nameAndValue(stylesheet, i)
                 CSSList.append(CSSDict)
             else:
-                importRule['import_statement'] = "@import url('"+stylesheet.rules[i].uri+"');"
+                print(i)
+                if(stylesheet.rules[i].at_keyword=='@media'):
+                    # importRule['import_statement'] = self.process_at_media(stylesheet,i)
+                    pass
+                elif(stylesheet.rules[i].at_keyword=='@import'):
+                    importRule['import_statement'] = "@import url('"+stylesheet.rules[i].uri+"');"
                 importList.append(importRule)
         css_and_import_Dict['css'] = CSSList
         css_and_import_Dict['imports'] = importList
-            # print(str(i)+"\n")
-            # print(CSSList[i])
-            # print("\n")
         return css_and_import_Dict
+
+
+    def process_at_media(self, stylesheet, i):
+        at_media = stylesheet.rules[i]
+        media = at_media.media
+        return_string = "@media "+media[0] +" {"
+        for rule in at_media.rules:
+            rule_name = ""
+            for rules in rule.selector:
+                rule_name = rule_name + rules.value
+            declarations = ""
+            for declaration in rule.declarations:
+                declarations = declarations + declaration.name +": "+ declaration.value[0]._as_css + " !"+declaration.priority + ";"
+            return_string = return_string + rule_name + " { " + declarations + " } "
+        return return_string+" }"
 
     ## Find matching classes
     def findMatchingClasses(self, CSSList, classes):
@@ -446,7 +463,8 @@ class MyHTMLParser(HTMLParser):
 
 
 # if __name__ == "__main__":
-#     html_link = "https://www.springsapartments.com/"
-#     css_link = "https://www.springsapartments.com/hs-fs/hub/365484/hub_generated/template_assets/17821690055/1611588866025/2019/coded_files/springs_2019.min.css"
-#     lws = Optomize(html_link, css_link)
-#     print(lws.run())
+    # html_link = "https://blog.koerber-tissue.com"
+    # css_link = "https://blog.koerber-tissue.com/hs-fs/hub/4035267/hub_generated/template_assets/33561049770/1625007799686/koerber-theme/assets/koerber-primary.css"
+    # lws = Optomize(html_link, css_link)
+    # print(lws.run())
+    # lws.run()
